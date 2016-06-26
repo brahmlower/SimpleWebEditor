@@ -1,8 +1,6 @@
 # SimpleWebEditor
 
-This project is still underdevelopment. Some descriptions here will represent the project in its final state.
-
-This provides a simple web interface for editing specified local files. After installing and starting the service, can open, edit and save files via your web browser of choice.
+This provides a simple web interface for editing files on the server it's run from. After starting the server, you can open, edit and save files via your web browser of choice. This can be useful if you would like a graphical editor on a remote server where latency makes ssh xforwarding impractical.
 ```
 pip install -y SimpleWebEditor
 python -m SimpleWebEditor
@@ -20,7 +18,7 @@ python -m SimpleWebEditor /etc
 * Bootstrap Treeview http://jonmiles.github.io/bootstrap-treeview/
 * Quill http://quilljs.com/
 
-## Development installation
+## Installation from source
 Prerequisites for the development installation are the following packages:
 * pip
 * nodejs (make sure 'node' points to 'nodejs' or running <code>npm install</code> will fail)
@@ -28,8 +26,10 @@ Prerequisites for the development installation are the following packages:
 ```
 git clone https://github.com/bplower/SimpleWebEditor.git
 cd SimpleWebEditor
-pip install -r requirements.txt
+virtualenv venv
+source venv/bin/activate
 npm install
 ./prepare-static.sh
-python main.py
+python setup.py install
+python -m SimpleWebEditor
 ```
