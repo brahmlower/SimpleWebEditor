@@ -39,6 +39,7 @@ setup(
 
     # Details:
     url = "http://github.com/bplower/SimpleWebEditor/",
+    download_url = 'https://github.com/bplower/SimpleWebEditor/tarball/0.0.1'
 
     # Description:
     description = "A simple server allowing you to edit files in a browser.",
