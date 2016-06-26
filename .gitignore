@@ -91,4 +91,3 @@ ENV/
 # SimpleFileWebEditor ignores
 node_modules/
 static/
-.pypirc

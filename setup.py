@@ -5,7 +5,7 @@ setup(
     name = "SimpleWebEditor",
 
     # Version number:
-    version = "0.0.1",
+    version = "0.0.2",
 
     # Application author details:
     author = "Brahm Lower",
@@ -39,7 +39,8 @@ setup(
 
     # Details:
     url = "http://github.com/bplower/SimpleWebEditor/",
-    download_url = 'https://github.com/bplower/SimpleWebEditor/tarball/0.0.1'
+    bugtrack_url = "https://github.com/bplower/SimpleWebEditor/issues",
+    download_url = 'https://github.com/bplower/SimpleWebEditor/tarball/' + version,
 
     # Description:
     description = "A simple server allowing you to edit files in a browser.",
