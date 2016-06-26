@@ -1,11 +1,13 @@
 from setuptools import setup
 
+version = "0.0.3"
+
 setup(
     # Application name:
     name = "SimpleWebEditor",
 
     # Version number:
-    version = "0.0.2",
+    version = version,
 
     # Application author details:
     author = "Brahm Lower",
@@ -43,11 +45,13 @@ setup(
     download_url = 'https://github.com/bplower/SimpleWebEditor/tarball/' + version,
 
     # Description:
-    description = "A simple server allowing you to edit files in a browser.",
-    long_description = open("README.md").read(),
+    description = "A simple server for editing remote files in a browser.",
+    long_description = open("README.rst").read(),
 
     # Dependant packages:
-    install_requires = ["flask"],
+    install_requires = [
+        "Flask>=0.11.1"
+    ],
 
     zip_safe = False,
 )
