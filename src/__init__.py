@@ -1,46 +1,78 @@
 import sys
 import os
 import json
-from flask import Flask
-from flask import request
+import flask
 
-app = Flask(__name__)
-filetree = []
+class SimpleWebEditor(flask.Flask):
+    def __init__(self, filepath, *args, **kwargs):
+        super(SimpleWebEditor, self).__init__(*args, **kwargs)
+        self.package_root = self.get_package_root()
+        self.register_routes()
+        self.path_is_dir = None
+        self.file_tree_root = None
+        self.sanitize_filepath(filepath)
+        self.file_tree = self.build_file_tree(filepath)
 
-@app.route("/")
-def index():
-    """
-    Serve the main page for editing everything
-    """
-    pkg_path = "/".join(sys.modules[__name__].__file__.split("/")[:-1]) + "/"
-    return open(pkg_path + 'index.html', 'r').read()
+    def register_routes(self):
+        # Now register the routes
+        self.route("/")(self.index)
+        self.route("/loadtree/")(self.loadtree)
+        self.route("/loadfile/", methods=['POST'])(self.loadfile)
+        self.route("/savefile/", methods=['POST'])(self.savefile)
 
-@app.route("/loadtree/")
-def loadtree():
-    """
-    Retrieves the directory tree structure
-    """
-    return json.dumps(filetree)
+    def sanitize_filepath(self, filepath):
+        if not os.path.exists(filepath):
+            raise ValueError
+        self.path_is_dir = os.path.isdir(filepath)
+        if self.path_is_dir:
+            self.file_tree_root = filepath + "/"
+        else:
+            self.file_tree_root = "/".join(filepath.split("/")[:-1]) + "/"
 
-@app.route("/loadfile/", methods=['POST'])
-def loadfile():
-    """
-    Loads data from the requested file. This will currently only work for
-    files in the same directory.
-    """
-    return open(request.form['filename'], 'r').read()
+    def get_package_root(self):
+        return "/".join(sys.modules[__name__].__file__.split("/")[:-1]) + "/"
 
-@app.route("/savefile/", methods=['POST'])
-def savefile():
-    """
-    This saves the data to the specified file.
-    """
-    filename = request.form['filename']
-    data = request.form['data'][:-1]
-    open(filename, 'w').write(data)
-    return "{'status': 'success'}"
+    def build_file_tree(self, file_path):
+        if not self.path_is_dir:
+            file_name = file_path.split("/")[-1]
+            return convert_tree({file_name: None})
 
-def get_directory_structure(rootdir):
+        raw_tree_dict = get_dir_tree(file_path)
+        raw_tree_dict_root_key = file_path.split("/")[-1]
+        raw_tree_dict = raw_tree_dict[raw_tree_dict_root_key]
+        return convert_tree(raw_tree_dict)
+
+    def index(self):
+        """
+        Serve the main page for editing everything
+        """
+        return open(self.package_root + 'index.html', 'r').read()
+
+    def loadtree(self):
+        """
+        Retrieves the directory tree structure
+        """
+        return json.dumps(self.file_tree)
+
+    def loadfile(self):
+        """
+        Loads data from the requested file. This will currently only work for
+        files in the same directory.
+        """
+        file_path = self.file_tree_root + flask.request.form['filename']
+        file_content = open(file_path, 'r').read()
+        return file_content
+
+    def savefile(self):
+        """
+        This saves the data to the specified file.
+        """
+        file_path = self.file_tree_root + flask.request.form['filename']
+        file_data = flask.request.form['data'][:-1]
+        open(file_path, 'w').write(file_data)
+        return "{'status': 'success'}"
+
+def get_dir_tree(rootdir):
     """
     Creates a nested dictionary that represents the folder structure of rootdir
     """
@@ -70,11 +102,3 @@ def convert_tree(treedict):
                 'nodes': convert_tree(treedict[i])
             })
     return dirs + files
-
-# if __name__ == "__main__":
-#     filename = "."
-#     if len(sys.argv) > 1:
-#         filename = sys.argv[1]
-#     treedict = get_directory_structure(filename)
-#     filetree = convert_tree(treedict["."])
-#     app.run()
