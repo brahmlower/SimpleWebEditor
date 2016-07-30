@@ -28,13 +28,20 @@ function loadTree() {
 };
 
 function saveFile() {
+    // Disable the save button to prevent multiple save operations at once
+    $('#save_button').prop("disabled", true);
+    // Now start the save operation
     $.post(
         '/savefile/',
         {
             filename: current_file,
             data: basicEditor.getText()
         },
-        function (data) { console.log(data) }
+        function (raw_data) {
+            data = JSON.parse(raw_data)
+            $('#save_button').prop("disabled", false);
+            $('#save_message').text(data.message);
+        }
     );
 };
 

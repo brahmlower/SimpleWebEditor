@@ -69,8 +69,15 @@ class SimpleWebEditor(flask.Flask):
         """
         file_path = self.file_tree_root + flask.request.form['filename']
         file_data = flask.request.form['data'][:-1]
-        open(file_path, 'w').write(file_data)
-        return "{'status': 'success'}"
+        status_dict = {}
+        try:
+            open(file_path, 'w').write(file_data)
+            status_dict['success'] = True
+            status_dict['message'] = 'Success'
+        except Exception as e:
+            status_dict['success'] = False
+            status_dict['message'] = str(e)
+        return json.dumps(status_dict)
 
 def get_dir_tree(rootdir):
     """
