@@ -1,4 +1,10 @@
 function onNodeSelect(event, node) {
+    if (node.nodes) {
+        // If the nodes attribute is defined, then the selected node
+        // is a directory, and not a file to be displayed. In this case,
+        // we do nothing and return.
+        return;
+    }
     current_file = node.text;
     parentNode = $('#tree').treeview('getNode', node.parentId);
     while (typeof parentNode.text == 'string') {
@@ -49,7 +55,12 @@ function loadFile() {
     $.post(
         '/loadfile/',
         { filename: current_file },
-        function (data) { basicEditor.setText(data) },
+        function (raw_data) {
+            data = JSON.parse(raw_data)
+            if (data.success) {
+                basicEditor.setText(data.message);
+            }
+        },
         "text"
     );
 };

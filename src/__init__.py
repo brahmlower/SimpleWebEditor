@@ -56,12 +56,18 @@ class SimpleWebEditor(flask.Flask):
 
     def loadfile(self):
         """
-        Loads data from the requested file. This will currently only work for
-        files in the same directory.
+        Loads data from the requested file.
         """
         file_path = self.file_tree_root + flask.request.form['filename']
-        file_content = open(file_path, 'r').read()
-        return file_content
+        status_dict = {}
+        if not os.path.isfile(file_path):
+            status_dict['success'] = False
+            status_dict['message'] = "Specified path '%s' is not a file." % flask.request.form['filename']
+            print status_dict['message']
+        else:
+            status_dict['success'] = True
+            status_dict['message'] = open(file_path, 'r').read()
+        return json.dumps(status_dict)
 
     def savefile(self):
         """
