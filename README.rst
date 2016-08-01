@@ -15,6 +15,14 @@ Running the module with no arguments will recursively list all files from the di
   python -m SimpleWebEditor ~/shopping_list.txt
   python -m SimpleWebEditor /etc
 
+By default, only connections from the localhost to port 5000 are allowed. We can change this by providing the host and port value.
+
+::
+
+  python -m SimpleWebEditor . 127.0.0.1 8000
+  python -m SimpleWebEditor . 0.0.0.0 9000
+  python -m SimpleWebEditor /etc 0.0.0.0 80
+
 Dependencies
 ------------
 - `Flask`_
@@ -37,9 +45,6 @@ Prerequisites for the development installation are the following packages:
 
   git clone https://github.com/bplower/SimpleWebEditor.git
   cd SimpleWebEditor
-  virtualenv venv
+  make install
   source venv/bin/activate
-  npm install
-  ./prepare-static.sh
-  python setup.py install
   python -m SimpleWebEditor
