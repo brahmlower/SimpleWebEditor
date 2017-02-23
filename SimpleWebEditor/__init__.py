@@ -2,54 +2,47 @@ import os
 import sys
 import json
 import flask
-
-PACKAGE_ROOT = "/".join(sys.modules[__name__].__file__.split("/")[:-1]) + "/"
+from flask import current_app
+from docopt import docopt
 
 class SimpleWebEditorServer(flask.Flask):
     def __init__(self, filepath, *args, **kwargs):
         super(SimpleWebEditorServer, self).__init__(*args, **kwargs)
-        #self.package_root = self.get_package_root()
-        self.package_root = PACKAGE_ROOT
-        self.register_routes()
         self.path_is_dir = None
-        self.file_tree_root = None
-        self.sanitize_filepath(filepath)
+        self.file_tree_root = self.get_file_tree_root(filepath)
         self.file_tree = self.build_file_tree(filepath)
 
-    def register_routes(self):
         # Now register the routes
         self.route("/")(self.index)
         self.route("/loadtree/")(self.loadtree)
         self.route("/loadfile/", methods=['POST'])(self.loadfile)
         self.route("/savefile/", methods=['POST'])(self.savefile)
 
-    def sanitize_filepath(self, filepath):
+    def get_file_tree_root(self, filepath):
         if not os.path.exists(filepath):
             raise ValueError
         self.path_is_dir = os.path.isdir(filepath)
         if self.path_is_dir:
-            self.file_tree_root = filepath + "/"
+            return filepath + "/"
         else:
-            self.file_tree_root = "/".join(filepath.split("/")[:-1]) + "/"
-
-    # def get_package_root(self):
-    #     return "/".join(sys.modules[__name__].__file__.split("/")[:-1]) + "/"
+            return "/".join(filepath.split("/")[:-1]) + "/"
 
     def build_file_tree(self, file_path):
+        raw_tree_dict = {}
         if not self.path_is_dir:
             file_name = file_path.split("/")[-1]
-            return convert_tree({file_name: None})
-
-        raw_tree_dict = get_dir_tree(file_path)
-        raw_tree_dict_root_key = file_path.split("/")[-1]
-        raw_tree_dict = raw_tree_dict[raw_tree_dict_root_key]
+            raw_tree_dict[file_name] = None
+        else:
+            temp_tree_dict = get_dir_tree(file_path)
+            raw_tree_dict_root_key = file_path.split("/")[-1]
+            raw_tree_dict = temp_tree_dict[raw_tree_dict_root_key]
         return convert_tree(raw_tree_dict)
 
     def index(self):
         """
         Serve the main page for editing everything
         """
-        return open(self.package_root + 'index.html', 'r').read()
+        return current_app.send_static_file('index.html')
 
     def loadtree(self):
         """
@@ -115,20 +108,23 @@ def convert_tree(treedict):
     return dirs + files
 
 def main(raw_input_list):
-    # Handle the provided options/arguments
-    filename = "."
-    flask_host = '127.0.0.1'
-    flask_port = 5000
-    if len(raw_input_list) > 1:
-        filename = raw_input_list[1]
-    if len(raw_input_list) > 2:
-        flask_host = raw_input_list[2]
-    if len(raw_input_list) > 3:
-        flask_port = raw_input_list[3]
+    """simplewebeditor
+
+    Usage:
+        simplewebeditor [options] [<file>]
+
+    Options:
+        -h, --help          Displays this message
+        -H, --host <host>   The address to serve on [default: 127.0.0.1]
+        -p, --port <port>   The port to serve on [default: 5000]
+    """
+    # Handle the provided arguments
+    arguments = docopt(main.__doc__, argv=raw_input_list)
+    if arguments["<file>"] is None:
+        arguments["<file>"] = "."
 
     # Translate user paths and convert it to an absolute path
-    filename = os.path.abspath(os.path.expanduser(filename))
+    filename = os.path.abspath(os.path.expanduser(arguments['<file>']))
 
-    swe = SimpleWebEditorServer(filename, __name__)
-    swe.run(host=flask_host, port=flask_port)
-
+    server = SimpleWebEditorServer(filename, __name__)
+    server.run(host=arguments['--host'], port=arguments['--port'])

@@ -23,7 +23,7 @@ setup(
 
     package_data = {
         "SimpleWebEditor": [
-            "index.html",
+            "static/index.html",
             "static/js/jquery.min.js",
             "static/css/bootstrap.css",
             "static/js/bootstrap.js",
@@ -39,6 +39,8 @@ setup(
         ]
     },
 
+    scripts = ['scripts/simplewebeditor'],
+
     # Details:
     url = "http://github.com/bplower/SimpleWebEditor/",
     bugtrack_url = "https://github.com/bplower/SimpleWebEditor/issues",
@@ -50,7 +52,8 @@ setup(
 
     # Dependant packages:
     install_requires = [
-        "Flask>=0.11.1"
+        "Flask>=0.11.1",
+        "docopt"
     ],
 
     zip_safe = False,

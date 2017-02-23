@@ -41,7 +41,7 @@ function saveFile() {
         '/savefile/',
         {
             filename: current_file,
-            data: basicEditor.getText()
+            data: editor.getValue()
         },
         function (raw_data) {
             data = JSON.parse(raw_data)
@@ -58,7 +58,7 @@ function loadFile() {
         function (raw_data) {
             data = JSON.parse(raw_data)
             if (data.success) {
-                basicEditor.setText(data.message);
+                editor.setValue(data.message);
             }
         },
         "text"
@@ -67,6 +67,8 @@ function loadFile() {
 
 var editorConfig = {styles: {'.ql-editor': {'font-family': "monospace"}}}
 var current_file = '';
-var basicEditor = new Quill('#editor', editorConfig);
-basicEditor.addModule('toolbar', {container: '#toolbar'});
+
+var editor = ace.edit("editor")
+$("#editor")[0].style.height = $(window).height().toString() + "px";
+$(window).height();
 loadTree();

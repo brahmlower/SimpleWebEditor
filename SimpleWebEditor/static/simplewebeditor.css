@@ -1,0 +1,17 @@
+#editor { 
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+#editor_wrapper {
+    height: 100%;
+}
+
+.toolbar {
+    padding: 5px 15px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
