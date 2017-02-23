@@ -5,6 +5,8 @@ import flask
 from flask import current_app
 from docopt import docopt
 
+__version__ = "0.0.7"
+
 class SimpleWebEditorServer(flask.Flask):
     def __init__(self, filepath, *args, **kwargs):
         super(SimpleWebEditorServer, self).__init__(*args, **kwargs)

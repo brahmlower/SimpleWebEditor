@@ -1,13 +1,12 @@
 from setuptools import setup
-
-version = "0.0.6"
+from SimpleWebEditor import __version__
 
 setup(
     # Application name:
     name = "SimpleWebEditor",
 
     # Version number:
-    version = version,
+    version = __version__,
 
     # Application author details:
     author = "Brahm Lower",
@@ -44,7 +43,7 @@ setup(
     # Details:
     url = "http://github.com/bplower/SimpleWebEditor/",
     bugtrack_url = "https://github.com/bplower/SimpleWebEditor/issues",
-    download_url = 'https://github.com/bplower/SimpleWebEditor/tarball/' + version,
+    download_url = 'https://github.com/bplower/SimpleWebEditor/tarball/{}'.format(__version__),
 
     # Description:
     description = "A simple server for editing remote files in a browser.",
