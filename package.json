@@ -1,5 +1,5 @@
 {
-  "name": "simplewebfileeditor",
+  "name": "simplewebeditor",
   "version": "0.0.1",
   "description": "A simple to use web interface for editing files.",
   "main": "index.js",
@@ -15,12 +15,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bplower/SimpleFileWebEditor.git"
+    "url": "git+https://github.com/bplower/SimpleWebEditor.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/bplower/SimpleFileWebEditor/issues"
+    "url": "https://github.com/bplower/SimpleWebEditor/issues"
   },
-  "homepage": "https://github.com/bplower/SimpleFileWebEditor#readme"
+  "homepage": "https://github.com/bplower/SimpleWebEditor#readme"
 }

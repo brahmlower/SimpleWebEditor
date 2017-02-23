@@ -1,12 +1,15 @@
-import sys
 import os
+import sys
 import json
 import flask
 
-class SimpleWebEditor(flask.Flask):
+PACKAGE_ROOT = "/".join(sys.modules[__name__].__file__.split("/")[:-1]) + "/"
+
+class SimpleWebEditorServer(flask.Flask):
     def __init__(self, filepath, *args, **kwargs):
-        super(SimpleWebEditor, self).__init__(*args, **kwargs)
-        self.package_root = self.get_package_root()
+        super(SimpleWebEditorServer, self).__init__(*args, **kwargs)
+        #self.package_root = self.get_package_root()
+        self.package_root = PACKAGE_ROOT
         self.register_routes()
         self.path_is_dir = None
         self.file_tree_root = None
@@ -29,8 +32,8 @@ class SimpleWebEditor(flask.Flask):
         else:
             self.file_tree_root = "/".join(filepath.split("/")[:-1]) + "/"
 
-    def get_package_root(self):
-        return "/".join(sys.modules[__name__].__file__.split("/")[:-1]) + "/"
+    # def get_package_root(self):
+    #     return "/".join(sys.modules[__name__].__file__.split("/")[:-1]) + "/"
 
     def build_file_tree(self, file_path):
         if not self.path_is_dir:
@@ -80,24 +83,24 @@ class SimpleWebEditor(flask.Flask):
             open(file_path, 'w').write(file_data)
             status_dict['success'] = True
             status_dict['message'] = 'Success'
-        except Exception as e:
+        except Exception as error:
             status_dict['success'] = False
-            status_dict['message'] = str(e)
+            status_dict['message'] = str(error)
         return json.dumps(status_dict)
 
 def get_dir_tree(rootdir):
     """
     Creates a nested dictionary that represents the folder structure of rootdir
     """
-    dir = {}
+    dir_tree = {}
     rootdir = rootdir.rstrip(os.sep)
     start = rootdir.rfind(os.sep) + 1
     for path, dirs, files in os.walk(rootdir):
         folders = path[start:].split(os.sep)
         subdir = dict.fromkeys(files)
-        parent = reduce(dict.get, folders[:-1], dir)
+        parent = reduce(dict.get, folders[:-1], dir_tree)
         parent[folders[-1]] = subdir
-    return dir
+    return dir_tree
 
 def convert_tree(treedict):
     dirs = []
@@ -105,13 +108,27 @@ def convert_tree(treedict):
     for i in treedict:
         if not treedict[i]:
             # This is a file
-            files.append({
-                'text': i
-            })
+            files.append({'text': i})
         else:
             # This is a directory
-            dirs.append({
-                'text': i,
-                'nodes': convert_tree(treedict[i])
-            })
+            dirs.append({'text': i, 'nodes': convert_tree(treedict[i])})
     return dirs + files
+
+def main(raw_input_list):
+    # Handle the provided options/arguments
+    filename = "."
+    flask_host = '127.0.0.1'
+    flask_port = 5000
+    if len(raw_input_list) > 1:
+        filename = raw_input_list[1]
+    if len(raw_input_list) > 2:
+        flask_host = raw_input_list[2]
+    if len(raw_input_list) > 3:
+        flask_port = raw_input_list[3]
+
+    # Translate user paths and convert it to an absolute path
+    filename = os.path.abspath(os.path.expanduser(filename))
+
+    swe = SimpleWebEditorServer(filename, __name__)
+    swe.run(host=flask_host, port=flask_port)
+

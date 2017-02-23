@@ -19,7 +19,7 @@ setup(
     # Packages:
     packages = ["SimpleWebEditor"],
 
-    package_dir = {'SimpleWebEditor': 'src'},
+    package_dir = {'SimpleWebEditor': 'SimpleWebEditor'},
 
     package_data = {
         "SimpleWebEditor": [
