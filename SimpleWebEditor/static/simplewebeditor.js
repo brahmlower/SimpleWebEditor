@@ -56,9 +56,9 @@ function loadFile() {
         '/loadfile/',
         { filename: current_file },
         function (raw_data) {
-            data = JSON.parse(raw_data)
+            data = JSON.parse(raw_data);
             if (data.success) {
-                editor.setValue(data.message);
+                editor.setValue(data.message, -1);
             }
         },
         "text"
@@ -69,6 +69,5 @@ var editorConfig = {styles: {'.ql-editor': {'font-family': "monospace"}}}
 var current_file = '';
 
 var editor = ace.edit("editor")
-$("#editor")[0].style.height = $(window).height().toString() + "px";
-$(window).height();
+editor.resize();
 loadTree();

@@ -23,18 +23,17 @@ setup(
     package_data = {
         "SimpleWebEditor": [
             "static/index.html",
-            "static/js/jquery.min.js",
-            "static/css/bootstrap.css",
-            "static/js/bootstrap.js",
+            "static/vendor/jquery.min.js",
+            "static/vendor/bootstrap.min.css",
+            "static/vendor/bootstrap.min.js",
             "static/fonts/glyphicons-halflings-regular.ttf",
             "static/fonts/glyphicons-halflings-regular.woff",
             "static/fonts/glyphicons-halflings-regular.woff2",
-            "static/css/bootstrap-treeview.min.css",
-            "static/js/bootstrap-treeview.min.js",
-            "static/css/quill.snow.css",
-            "static/js/quill.js",
-            "static/css/simplewebeditor.css",
-            "static/js/simplewebeditor.js"
+            "static/vendor/bootstrap-treeview.min.css",
+            "static/vendor/bootstrap-treeview.min.js",
+            "static/vendor/ace.js",
+            "static/simplewebeditor.css",
+            "static/simplewebeditor.js"
         ]
     },
 

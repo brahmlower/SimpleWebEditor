@@ -72,7 +72,7 @@ class SimpleWebEditorServer(flask.Flask):
         This saves the data to the specified file.
         """
         file_path = self.file_tree_root + flask.request.form['filename']
-        file_data = flask.request.form['data'][:-1]
+        file_data = flask.request.form['data']
         status_dict = {}
         try:
             open(file_path, 'w').write(file_data)
